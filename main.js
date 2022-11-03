@@ -15,7 +15,7 @@
  * To make the second one happen, the number to change
  * is the first argument to `repeat`, currently set at 10.
  */
-const gridWidth = 10;
+const gridWidth = 20;
 let count = 0;
 while (count <= gridWidth * gridWidth) {
   const canvas = document.querySelector('.canvas');
@@ -49,25 +49,63 @@ while (count <= gridWidth * gridWidth) {
 // Add queries for all your squares, palette colors, and brush here.
 // (Note the singular or plural used in that sentence!)
 
+let colors = document.querySelectorAll('.palette div')
 
+let current_color = document.querySelector('.current-brush')
+let current_color_class = current_color.classList
+
+let canvas = document.querySelector('.canvas')
+let canvas_divs = document.querySelectorAll('.canvas div')
+
+selectedColor = 'color-2'
+
+let clicked = false
 
 /****************************
  * EVENT LISTENER FUNCTIONS *
-****************************/
+ ****************************/
 
-// Now add some functions to handle clicking one particular square
-// and clicking one particular palette color. You can leave them
-// empty at first, though a console.log just to know they're being
-// run as event listeners (after the next step is set up) isn't a
-// bad idea for testing purposes.
+for(let color of colors){
+  color.addEventListener('click', function(){
+    // searches through the class names for which item you clicked, looking for a class name that starts with 'color-'. It then saves that class name to a variable named selectedColor
+    for(let class_name of color.classList){
+      if(class_name.startsWith('color-')){
+        selectedColor = class_name
+      }
+    }
+    // After getting the selected color class from for loop above, it then goes through the classes that the current paint brush has, also looking for a class that starts with 'color-'. it then replaces that class with the one selected above
+    for(let class_name of current_color_class){
+      if(class_name.startsWith('color-')){
+        current_color_class.replace(class_name, selectedColor)
+      }
+    }
+  })
+}
+
+
+canvas.addEventListener('mouseup', function(){
+  clicked = false
+  console.log(clicked)
+})
+
+canvas.addEventListener('mousedown', function(){
+  clicked = true
+  console.log(clicked)
+})
+
+
+for(let division of canvas_divs){
+  division.addEventListener('mouseenter', function(){
+    if(clicked){
+      for(let divClassName of division.classList){
+        if(divClassName.startsWith('color-')){
+          division.classList.replace(divClassName, selectedColor)
+        }
+      }
+    }
+  })
+}
 
 
 
-/**************************
- * WIRING IT ALL TOGETHER *
-**************************/
 
-// Now: wiring up our event listeners to our html node elements.
-// You'll need to add the appropriate event listener for each
-// square and for each palette color from the functions you
-// wrote above.
