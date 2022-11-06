@@ -15,7 +15,7 @@
  * To make the second one happen, the number to change
  * is the first argument to `repeat`, currently set at 10.
  */
-const gridWidth = 20;
+const gridWidth = 10;
 let count = 0;
 while (count <= gridWidth * gridWidth) {
   const canvas = document.querySelector('.canvas');
@@ -50,6 +50,7 @@ while (count <= gridWidth * gridWidth) {
 // (Note the singular or plural used in that sentence!)
 
 let colors = document.querySelectorAll('.palette div')
+let palette = document.querySelector('.palette')
 
 let current_color = document.querySelector('.current-brush')
 let current_color_class = current_color.classList
@@ -68,6 +69,7 @@ let clicked = false
 for(let color of colors){
   color.addEventListener('click', function(){
     // searches through the class names for which item you clicked, looking for a class name that starts with 'color-'. It then saves that class name to a variable named selectedColor
+    current_color.style.background = ''
     for(let class_name of color.classList){
       if(class_name.startsWith('color-')){
         selectedColor = class_name
@@ -85,26 +87,67 @@ for(let color of colors){
 
 canvas.addEventListener('mouseup', function(){
   clicked = false
-  console.log(clicked)
 })
 
 canvas.addEventListener('mousedown', function(){
   clicked = true
-  console.log(clicked)
 })
+
+
 
 
 for(let division of canvas_divs){
   division.addEventListener('mouseenter', function(){
     if(clicked){
-      for(let divClassName of division.classList){
-        if(divClassName.startsWith('color-')){
-          division.classList.replace(divClassName, selectedColor)
+      if(selectedColor.startsWith('color-')){
+        division.style.background = ''
+        for(let divClassName of division.classList){
+          if(divClassName.startsWith('color-')){
+            division.classList.replace(divClassName, selectedColor)
+          }
         }
+      }
+      else if(selectedColor.startsWith('(')){
+        division.style.background = 'rgb' + selectedColor
+      }
+      else {
+        division.style.background = selectedColor
       }
     }
   })
 }
+
+let colors_length = colors.length
+
+let new_color = document.querySelector('#input')
+let submit_new_color = document.querySelector('#new-color-submit')
+
+submit_new_color.addEventListener('click', function(){
+  let new_color_input = new_color.value
+  let new_div = document.createElement(`div`)
+  new_div.classList.add('palette-color')
+  new_div.classList.add(`color-${colors.length + 1}`)
+
+  if(new_color_input.startsWith('(')){
+    new_div.style.background = 'rgb' + new_color_input
+    new_div.addEventListener('click', function(){
+      current_color.style.background = 'rgb' + new_color_input
+      selectedColor = new_color_input      
+    })
+  }
+  else{
+    new_div.style.background = new_color_input
+    new_div.addEventListener('click', function(){
+      current_color.style.background = new_color_input
+      selectedColor = new_color_input
+    })
+  }
+
+  if(new_div.style.background !== ''){
+    palette.appendChild(new_div)
+    new_color.value = ''
+  }
+})
 
 
 
